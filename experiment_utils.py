@@ -31,9 +31,11 @@ def add_scripts_folder(dst_path, src_path=None):
         
     script_folder = Path(dst_path).expanduser().resolve() / "scripts"
     script_folder.mkdir(exist_ok=False, parents=False)
-    script_files = src_path.glob("*.py")
+    script_files = src_path.glob("**/*.py")
     for script_file in script_files:
-        shutil.copy2(script_file, script_folder)
+        new_path = script_folder / script_file.relative_to(src_path)
+        new_path.parent.mkdir(exist_ok=True, parents=True)
+        shutil.copy2(script_file, new_path)
     
 def add_console_argv(folder_path):  
     with open(folder_path / "console_argv.txt", "w") as outfile:
