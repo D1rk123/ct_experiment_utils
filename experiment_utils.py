@@ -25,7 +25,7 @@ def make_new_experiment_folder(save_folder, scripts_src_path=None):
     
 def add_scripts_folder(dst_path, src_path=None):
     if src_path is None:
-        src_path = Path(__file__).parent
+        src_path = Path(__file__).parent.parent
     else:
         src_path = Path(src_path).expanduser().resolve()
         
