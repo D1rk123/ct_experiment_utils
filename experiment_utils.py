@@ -5,9 +5,9 @@ import sys
 import datetime
 from pathlib import Path
 
-def make_new_experiment_folder(save_folder, scripts_src_path=None):
+def make_new_experiment_folder(save_folder, name="", scripts_src_path=None):
     save_folder = Path(save_folder).expanduser().resolve()
-    base_name = "{:%Y-%m-%d}_".format(datetime.datetime.now())
+    base_name = f"{datetime.datetime.now():%Y-%m-%d}_{name}_"
     existing_folders = save_folder.glob(f"{base_name}*")
     existing_numbers = [re.search(base_name+r'\d+$', str(f)) for f in existing_folders]
     highest_existing = max([int(n.group()[len(base_name):]) for n in existing_numbers if n is not None] + [0])
