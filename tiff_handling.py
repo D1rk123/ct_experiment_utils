@@ -5,25 +5,31 @@ import numpy as np
 import torch
 
 
-def load_stack(path, *, prefix="", skip=1, squeeze=False, dtype=None, stack_axis=0):
-    """Load a stack of tiff files.
+def load_stack(path, *, prefix="", dtype=None, stack_axis=0, range_start=0, range_stop=None, range_step=1):
+    """Load a stack of tiff files into a contiguous numpy array
 
     Make sure that the tiff files are sorted *alphabetically*,
     otherwise it is not going to look pretty..
 
     :param path: path to directory containing tiff files
-    :param skip: read every `skip' image
-    :param squeeze: whether to remove any empty dimensions from image
-    :param dtype: sets the type of the resulting array. All images will be cast to this type
-    :param stack_axis: determines the dimension in the result where the image in the stack will be indexed
+    :param prefix: only images starting with this prefix are loaded
+    :param dtype: sets the type of the resulting array. If provided all images will be cast to this type
+    :param stack_axis: the dimension in the output where the image in the stack will be indexed
+    :param range_start: the start of the range of included images, default is the first image
+    :param range_stop: the end of the range of included images, default is the last image
+    :param range_step: every range_step image between range_start and range_stop is included
+    
     :returns: an np.array containing the values in the tiff files
     :rtype: np.array
 
     """
     path = Path(path).expanduser().resolve()
 
-    # Only read every `skip' image:
-    img_paths = sorted(path.glob(prefix+"*.tif"))[::skip]
+    img_paths = sorted(path.glob(prefix+"*.tif"))
+    if range_stop is None:
+        range_stop = len(img_paths)
+    img_paths = img_paths[range_start:range_stop:range_step]
+    
     img0 = tifffile.imread(str(img_paths[0]))
     if dtype is None:
         dtype = img0.dtype
@@ -38,9 +44,6 @@ def load_stack(path, *, prefix="", skip=1, squeeze=False, dtype=None, stack_axis
             result[:, i, ...] = read_image
         else:
             result[:, :, i] = read_image
-    
-    if squeeze:
-        result = result.squeeze()
     
     return result
     
