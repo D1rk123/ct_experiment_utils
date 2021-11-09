@@ -56,5 +56,5 @@ def save_stack(path, data, *, prefix="output", exist_ok=False, parents=False, st
         data = data.cpu().numpy()
 
     for i in tqdm(range(data.shape[stack_axis])):
-        output_path = path / f"{prefix}_{i:05d}.tif"
+        output_path = path / f"{prefix}{i:05d}.tif"
         tifffile.imsave(str(output_path), data.take(indices=i, axis=stack_axis))
