@@ -25,7 +25,8 @@ def load_stack(path, *, prefix="", dtype=None, stack_axis=0, range_start=0, rang
     """
     path = Path(path).expanduser().resolve()
 
-    img_paths = sorted(path.glob(prefix+"*.tif"))
+    img_paths = sorted(list(path.glob(prefix+"*.tif"))
+                     + list(path.glob(prefix+"*.tiff")))
     if range_stop is None:
         range_stop = len(img_paths)
     img_paths = img_paths[range_start:range_stop:range_step]
