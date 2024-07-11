@@ -2,7 +2,12 @@ from pathlib import Path
 import tifffile
 from tqdm import tqdm
 import numpy as np
-import torch
+import sys
+try:
+    import torch
+except ImportError:
+    pass
+
 
 
 def load_stack(path, *, prefix="", dtype=None, stack_axis=0, range_start=0, range_stop=None, range_step=1):
@@ -53,7 +58,7 @@ def save_stack(path, data, *, prefix="output", exist_ok=False, parents=False, st
     path = Path(path).expanduser().resolve()
     path.mkdir(exist_ok=exist_ok, parents=parents)
     
-    if isinstance(data, torch.Tensor):
+    if "torch" in sys.modules and isinstance(data, torch.Tensor):
         data = data.cpu().numpy()
 
     for i in tqdm(range(data.shape[stack_axis])):
