@@ -11,7 +11,7 @@ def make_new_experiment_folder(save_folder, name=None, scripts_src_path=None):
         name = sys.argv[0][:-3]
     base_name = f"{datetime.datetime.now():%Y-%m-%d}_{name}_"
     existing_folders = save_folder.glob(f"{base_name}*")
-    existing_numbers = [re.search(base_name+r'\d+$', str(f)) for f in existing_folders]
+    existing_numbers = [re.search(re.escape(base_name)+r'\d+$', str(f)) for f in existing_folders]
     highest_existing = max([int(n.group()[len(base_name):]) for n in existing_numbers if n is not None] + [0])
     
     # In a PyTorch Lightning multi GPU setup, only create a folder once
