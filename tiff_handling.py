@@ -54,7 +54,7 @@ def load_stack(path, *, prefix="", dtype=None, stack_axis=0, range_start=0, rang
     return result
     
 
-def save_stack(path, data, *, prefix="output", exist_ok=False, parents=False, stack_axis=0):
+def save_stack(path, data, *, prefix="output", exist_ok=False, parents=False, stack_axis=0, range_start=0, range_step=1):
     path = Path(path).expanduser().resolve()
     path.mkdir(exist_ok=exist_ok, parents=parents)
     
@@ -62,5 +62,5 @@ def save_stack(path, data, *, prefix="output", exist_ok=False, parents=False, st
         data = data.cpu().numpy()
 
     for i in tqdm(range(data.shape[stack_axis])):
-        output_path = path / f"{prefix}{i:05d}.tif"
+        output_path = path / f"{prefix}{(range_start+i*range_step):05d}.tif"
         tifffile.imsave(str(output_path), data.take(indices=i, axis=stack_axis))
